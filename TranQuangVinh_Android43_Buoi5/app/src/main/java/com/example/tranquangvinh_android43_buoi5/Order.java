@@ -2,6 +2,7 @@ package com.example.tranquangvinh_android43_buoi5;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,37 +13,39 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.tranquangvinh_android43_buoi5.databinding.ActivityOrderBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Order extends AppCompatActivity {
-    ListView lvFood;
-    Food food,food1,food2,food3,food4,food5;
+public class Order extends AppCompatActivity implements IOrder {
+
+    Food food, food1, food2, food3, food4, food5;
     List<Food> foodList;
-    ImageButton btCart;
-    TextView tvCCart,ttPrice,tvThank,tvName;
-    Button btOrder;
     String lvFood_Cart = "";
     int count = 0;
     int Price = 0;
+    ActivityOrderBinding binding;
+    OrderPresenter orderPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_order);
+        orderPresenter = new OrderPresenter(this);
 
-        lvFood = findViewById(R.id.lvFood);
 
         foodList = new ArrayList<>();
 
-        food = new Food("Pizza Panda","100");
-        food1 = new Food("KFC Super","120");
-        food2 = new Food("Bread Eggs","50");
-        food3 = new Food("Coca Cola","10");
-        food4 = new Food("Chicken super","200");
-        food5 = new Food("Cup Cake","30");
+        food = new Food("Pizza Panda", "100");
+        food1 = new Food("KFC Super", "120");
+        food2 = new Food("Bread Eggs", "50");
+        food3 = new Food("Coca Cola", "10");
+        food4 = new Food("Chicken super", "200");
+        food5 = new Food("Cup Cake", "30");
 
         foodList.add(food);
         foodList.add(food1);
@@ -52,52 +55,39 @@ public class Order extends AppCompatActivity {
         foodList.add(food5);
 
         AdapterFood adapterFood = new AdapterFood(foodList);
-        lvFood.setAdapter(adapterFood);
-
-        tvCCart = findViewById(R.id.tvCCart);
-        tvThank = findViewById(R.id.tvThank);
-        ttPrice = findViewById(R.id.ttPrice);
-        btOrder = findViewById(R.id.btOrder);
+        binding.lvFood.setAdapter(adapterFood);
 
 
-        lvFood.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        binding.lvFood.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                count = count + 1;
-                tvCCart.setText(Integer.toString(count));
-
                 int price = Integer.parseInt(foodList.get(i).getPrice());
-                Price = Price + price;
-                ttPrice.setText(Integer.toString(Price) + "$");
+                count = Integer.parseInt(binding.tvCCart.getText().toString());
+                Price = Integer.parseInt(binding.ttPrice.getText().toString().substring(0,binding.ttPrice.length()-1));
+                orderPresenter.onClickItemLV(count,price,Price);
 
                 lvFood_Cart = lvFood_Cart + foodList.get(i).getName() + "/";
             }
         });
 
-        btOrder.setOnClickListener(new View.OnClickListener() {
+        binding.btOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Price = 0;
-                count = 0;
                 lvFood_Cart = "";
-                tvCCart.setText("0");
-                ttPrice.setText("0$");
-                tvThank.setText("Thank you! Your order is sent to restaurant!");
+                orderPresenter.onOrderClick(count,Price);
             }
         });
 
-        btCart = findViewById(R.id.btCart);
 
-        btCart.setOnClickListener(new View.OnClickListener() {
+        binding.btCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent =new Intent(getBaseContext(),Cart.class);
-                intent.putExtra("price", Price);
-                intent.putExtra("food",lvFood_Cart);
-                startActivity(intent);
+                count = Integer.parseInt(binding.tvCCart.getText().toString());
+                Price = Integer.parseInt(binding.ttPrice.getText().toString().substring(0,binding.ttPrice.length()-1));
+                changeActivity(Cart.class);
             }
         });
-        
+
 
     }
 
@@ -105,7 +95,7 @@ public class Order extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        outState.putInt("price",Price);
+        outState.putInt("price", Price);
     }
 
     @Override
@@ -113,6 +103,29 @@ public class Order extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         Price = savedInstanceState.getInt("price");
-        ttPrice.setText(Integer.toString(Price));
+        binding.ttPrice.setText(Integer.toString(Price));
+    }
+
+
+    @Override
+    public void onItemLVClick(int count, int curPrice) {
+        binding.tvCCart.setText(Integer.toString(count));
+        binding.ttPrice.setText(Integer.toString(curPrice) + "$");
+    }
+
+    @Override
+    public void onOrderClick(String mess) {
+        binding.tvCCart.setText("0");
+        binding.ttPrice.setText("0$");
+        binding.tvThank.setText("Thank you! Your order is sent to restaurant!");
+        Toast.makeText(getBaseContext(),mess,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void changeActivity(Class Cart) {
+        Intent intent = new Intent(getBaseContext(), Cart);
+        intent.putExtra("price", Price);
+        intent.putExtra("food", lvFood_Cart);
+        startActivity(intent);
     }
 }
