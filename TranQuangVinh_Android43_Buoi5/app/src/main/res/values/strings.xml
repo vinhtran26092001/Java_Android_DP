@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">TranQuangVinh_Android43_Buoi5</string>
+
+    <!--    Login-->
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="Login">Login</string>
+
+    <!--    Order-->
+    <string name="Welcome">Welcome KhoaHA</string>
+    <string name="Foodorder">Food Order</string>
+    <string name="Totalprice">Total price:</string>
+    <string name="Order">Order</string>
+    <string name="Defaultprice">0$</string>
+
+<!--    Cart-->
+
+    <string name="Welcome_cart">Your Order:</string>
+</resources>
