@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 //        getJson();
         adapterProduct = new AdapterProduct(productList);
         binding.lvProduct.setAdapter(adapterProduct);
+
+//        getJsonArrayObj();
     }
 
 //    private void getJson(){
@@ -50,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void getJsonArray(List<Product> productList) {
         try {
-            jsonArray = jsonArray.substring(1, jsonArray.length() - 1);
-            JSONObject array = new JSONObject(jsonArray);
+            JSONArray array = new JSONArray(jsonArray);
 
             for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonObject = new JSONObject(jsonArray);
+                JSONObject jsonObject = array.getJSONObject(i);
 
                 int id = jsonObject.getInt("id");
                 int publisher_id = jsonObject.getInt("publisher_id");
@@ -70,4 +71,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 }
