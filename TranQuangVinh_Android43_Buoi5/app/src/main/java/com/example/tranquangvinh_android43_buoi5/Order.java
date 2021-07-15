@@ -92,19 +92,19 @@ public class Order extends AppCompatActivity implements IOrder {
     }
 
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putInt("price", Price);
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState,PersistableBundle outPersistentState) {
+//        super.onSaveInstanceState(outState, outPersistentState);
+//        outState.putInt("price", Price);
+//    }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        Price = savedInstanceState.getInt("price");
-        binding.ttPrice.setText(Integer.toString(Price));
-    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//
+//        Price = savedInstanceState.getInt("price");
+//        binding.ttPrice.setText(Integer.toString(Price));
+//    }
 
 
     @Override
